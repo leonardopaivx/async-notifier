@@ -1,0 +1,76 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "status"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    image: async-notifier:latest
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ./:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+
+  entry_consumer:
+    build: .
+    image: async-notifier:latest
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    command: python -m app.consumers.entry_processor
+    volumes:
+      - ./:/app
+    env_file:
+      - .env
+
+  retry_consumer:
+    build: .
+    image: async-notifier:latest
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    command: python -m app.consumers.retry_processor
+    volumes:
+      - ./:/app
+    env_file:
+      - .env
+
+  validation_consumer:
+    build: .
+    image: async-notifier:latest
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    command: python -m app.consumers.validation_processor
+    volumes:
+      - ./:/app
+    env_file:
+      - .env
+
+  dlq_consumer:
+    build: .
+    image: async-notifier:latest
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    command: python -m app.consumers.dlq_processor
+    volumes:
+      - ./:/app
+    env_file:
+      - .env
