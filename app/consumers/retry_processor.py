@@ -17,13 +17,13 @@ class RetryProcessor(BaseProcessor):
             MemoryStore.update_status(
                 trace_id, NotificationStatus.FINAL_REPROCESS_FAILURE
             )
-            await message.channel.default_exchange.publish(
+            await self.channel.default_exchange.publish(
                 Message(body=message.body, correlation_id=trace_id),
                 routing_key=settings.dlq_queue,
             )
         else:
             MemoryStore.update_status(trace_id, NotificationStatus.REPROCESSING_SUCCESS)
-            await message.channel.default_exchange.publish(
+            await self.channel.default_exchange.publish(
                 Message(body=message.body, correlation_id=trace_id),
                 routing_key=settings.validation_queue,
             )

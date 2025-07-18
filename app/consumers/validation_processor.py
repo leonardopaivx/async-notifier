@@ -15,7 +15,7 @@ class ValidationProcessor(BaseProcessor):
         await asyncio.sleep(random.uniform(0.5, 1))
         if random.random() < 0.05:
             MemoryStore.update_status(trace_id, NotificationStatus.FINAL_SEND_FAILURE)
-            await message.channel.default_exchange.publish(
+            await self.channel.default_exchange.publish(
                 Message(body=message.body, correlation_id=trace_id),
                 routing_key=settings.dlq_queue,
             )
