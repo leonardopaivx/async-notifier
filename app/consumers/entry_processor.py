@@ -12,11 +12,12 @@ class EntryProcessor(BaseProcessor):
 
     async def process(self, message: Message):
         trace_id = message.correlation_id
+
         if random.random() < 0.15:
             MemoryStore.update_status(
                 trace_id, NotificationStatus.INITIAL_PROCESSING_FAILURE
             )
-            await message.channel.default_exchange.publish(
+            await self.channel.default_exchange.publish(
                 Message(body=message.body, correlation_id=trace_id),
                 routing_key=settings.retry_queue,
             )
@@ -25,7 +26,7 @@ class EntryProcessor(BaseProcessor):
             MemoryStore.update_status(
                 trace_id, NotificationStatus.INTERMEDIATE_PROCESSED
             )
-            await message.channel.default_exchange.publish(
+            await self.channel.default_exchange.publish(
                 Message(body=message.body, correlation_id=trace_id),
                 routing_key=settings.validation_queue,
             )

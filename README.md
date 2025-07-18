@@ -2,6 +2,14 @@
 
 **Async-Notifier** é um microserviço de notificação assíncrona construído com FastAPI, aio-pika (RabbitMQ) e pipelines de processamento extensíveis.
 
+## Branches
+
+- **main-challenge-branch**: código exatamente como estava até o horário limite do desafio.
+- **main**: branch principal com ajustes e correções feitos após o horário limite, para corrigir bugs e problemas de estabilidade.
+
+**Observação:**  
+Após o horário limite do desafio, realizei algumas alterações no código e subi na branch `main` para corrigir alguns bugs e problemas que estavam quebrando a aplicação. A versão original, com o código existente até o prazo, está disponível na branch `main-challenge-branch`.
+
 ## Tecnologias
 
 - Python 3.11+
