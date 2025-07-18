@@ -21,7 +21,7 @@
 
 ```bash
 # clone o repositório
-git clone https://github.com/SEU_USUARIO/async-notifier.git
+git clone git@github.com:leonardopaivx/async-notifier.git
 cd async-notifier
 
 # configure variáveis em .env (exemplo já incluído)
